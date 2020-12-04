@@ -1,0 +1,20 @@
+ @action(detail=True , methods=['POST'])    
+    def rate_movies (self,request,pk=None):
+        if 'stars' in request.data :
+            movie = Movie.objects.get(id=pk)
+            stars = request.data['stars']
+            user = User.objects.get(id=1)
+            print('user', user)
+
+            try:
+                rating = Rating.objects.get(user=user.id, movie=movie.id)
+                rating.stars = stars
+                rating.save()
+            except:
+                Rating.objects.create(user=user, movie=movie, stars=stars)
+            
+            response={'message':'Its working'}
+            return Response (response, status = status.HTTP_200_OK)
+        else:
+            response={'message':'You need to provide stars'}
+            return Response (response, status = status.HTTP_400_BAD_REQUEST)
